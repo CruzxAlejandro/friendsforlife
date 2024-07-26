@@ -1,0 +1,10 @@
+views.style.simple_views_accordion:
+  type: views_style
+  label: 'Simple Views Accordion'
+  mapping:
+    wrapper_class:
+      type: string
+      label: Wrapper class
+    open_first:
+      type: boolean
+      label: Open first

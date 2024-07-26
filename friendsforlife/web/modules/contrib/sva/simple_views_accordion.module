@@ -1,0 +1,42 @@
+<?php // phpcs:ignore Drupal.Commenting.FileComment.Missing
+
+use Drupal\Core\Template\Attribute;
+
+/**
+ * Prepares variables for views-style-simple-views-accordion.html.twig template.
+ */
+function template_preprocess_views_style_simple_views_accordion(&$variables) {
+
+  $view = $variables['view'];
+  $options = $view->style_plugin->options;
+
+  // Fetch wrapper classes from handler options.
+  if ($options['wrapper_class']) {
+    $variables['attributes']['class'] = explode(' ', $options['wrapper_class']);
+  }
+
+  $variables['default_row_class'] = $options['default_row_class'];
+  foreach ($variables['rows'] as $id => $row) {
+    $variables['rows'][$id] = [];
+
+    // Take the first field or the entity label otherwise as the summary title.
+    $details_title = $view->result[$id]->_entity->label();
+    if ($view->rowPlugin->usesFields()) {
+      $fields = \array_keys($view->field);
+      $details_title = $view->style_plugin->getField($id, reset($fields));
+    }
+    $variables['rows'][$id]['content'] = [
+      '#type' => 'details',
+      '#title' => $details_title,
+    ];
+    $variables['rows'][$id]['content']['row'] = $row;
+    $variables['rows'][$id]['attributes'] = new Attribute();
+    if ($row_class = $view->style_plugin->getRowClass($id)) {
+      $variables['rows'][$id]['attributes']->addClass($row_class);
+    }
+  }
+
+  if (\count($variables['rows']) && !empty($options['open_first'])) {
+    $variables['rows'][0]['content']['#open'] = TRUE;
+  }
+}
