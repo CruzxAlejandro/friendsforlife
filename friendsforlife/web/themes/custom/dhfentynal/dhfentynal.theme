@@ -1,0 +1,11 @@
+<?php
+
+/**
+ * @file
+ * dhfentynal theme file.
+ */
+
+function dhfentynal_preprocess_block(&$variables) {
+  $slanguage = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  $variables['language_using'] = $slanguage;
+}
