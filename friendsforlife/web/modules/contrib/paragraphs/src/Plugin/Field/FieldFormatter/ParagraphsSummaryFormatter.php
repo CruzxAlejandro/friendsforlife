@@ -52,9 +52,7 @@ class ParagraphsSummaryFormatter extends EntityReferenceFormatterBase {
         ];
       }
     }
-    if ($elements) {
-      $elements['#attached']['library'][] = 'paragraphs/drupal.paragraphs.formatter';
-    }
+    $elements['#attached']['library'][] = 'paragraphs/drupal.paragraphs.formatter';
     return $elements;
   }
 

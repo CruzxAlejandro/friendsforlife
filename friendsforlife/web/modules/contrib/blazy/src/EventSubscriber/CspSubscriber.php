@@ -33,7 +33,7 @@ class CspSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents(): array {
+  public static function getSubscribedEvents() {
     $events = [];
 
     if (class_exists(CspEvents::class)) {
@@ -47,13 +47,9 @@ class CspSubscriber implements EventSubscriberInterface {
    *
    * @param \Drupal\csp\Event\PolicyAlterEvent $alterEvent
    *   The Policy Alter event.
-   *
-   * @phpstan-ignore-next-line
    */
   public function onCspPolicyAlter(PolicyAlterEvent $alterEvent) : void {
-    /* @phpstan-ignore-next-line */
     $policy = $alterEvent->getPolicy();
-    /* @phpstan-ignore-next-line */
     $response = $alterEvent->getResponse();
 
     if ($response instanceof AttachmentsInterface) {

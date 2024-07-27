@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Drupal\Tests\color_field\Kernel;
 
@@ -32,7 +32,7 @@ class ColorFieldTypeTest extends FieldKernelTestBase {
     // Verify entity creation.
     $entity = EntityTest::create();
     $color = '#5BCEFA';
-    $l_color = '5bcefa';
+    $lcolor = '5bcefa';
     $opacity = 0.5;
     $entity->field_test->color = $color;
     $entity->field_test->opacity = $opacity;
@@ -51,7 +51,7 @@ class ColorFieldTypeTest extends FieldKernelTestBase {
     $this->assertEquals($color, $entity->field_test[0]->color);
 
     // Verify field setting is respected.
-    $this->assertEquals($l_color, $entity->field_hex->color);
+    $this->assertEquals($lcolor, $entity->field_hex->color);
     $this->assertEquals('', $entity->field_hex->opacity);
 
     // Verify changing the field value.

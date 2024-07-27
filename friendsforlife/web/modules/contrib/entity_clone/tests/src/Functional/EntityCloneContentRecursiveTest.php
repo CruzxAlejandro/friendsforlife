@@ -98,7 +98,7 @@ class EntityCloneContentRecursiveTest extends NodeTestBase {
 
     $this->submitForm([
       'recursive[node.article.field_tags][references][' . $term->id() . '][clone]' => 1,
-    ], 'Clone');
+    ], $this->t('Clone'));
 
     $nodes = \Drupal::entityTypeManager()
       ->getStorage('node')

@@ -9,7 +9,7 @@ use Drupal\Core\StringTranslation\TranslationManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Entity Clone Contextual Links Derivative helper.
+ * Class EntityCloneContextualLinks
  *
  * @package Drupal\entity_clone\Plugin\Derivative
  */
@@ -35,7 +35,6 @@ class EntityCloneContextualLinks extends DeriverBase implements ContainerDeriver
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
    * @param \Drupal\Core\StringTranslation\TranslationManager $stringTranslation
-   *   The translation manager.
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager, TranslationManager $stringTranslation) {
     $this->entityTypeManager = $entityTypeManager;

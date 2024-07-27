@@ -2,8 +2,8 @@
 
 namespace Drupal\Tests\blazy\Traits;
 
-use Drupal\blazy\Blazy;
 use Drupal\blazy\BlazyDefault;
+use Drupal\blazy\BlazyEntity;
 use Drupal\blazy\Traits\PluginScopesTrait;
 
 /**
@@ -13,34 +13,6 @@ trait BlazyUnitTestTrait {
 
   use BlazyPropertiesTestTrait;
   use PluginScopesTrait;
-
-  /**
-   * The mocked translator.
-   *
-   * @var \Drupal\Core\StringTranslation\TranslationInterface
-   */
-  protected $stringTranslation;
-
-  /**
-   * The entity display repository.
-   *
-   * @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface
-   */
-  protected $entityDisplayRepository;
-
-  /**
-   * The type config manager.
-   *
-   * @var \Drupal\Core\Config\TypedConfigManagerInterface
-   */
-  protected $typedConfig;
-
-  /**
-   * The date formatter.
-   *
-   * @var \Drupal\Core\Datetime\DateFormatter
-   */
-  protected $dateFormatter;
 
   /**
    * The formatter settings.
@@ -65,11 +37,12 @@ trait BlazyUnitTestTrait {
       'thumbnail_style' => 'thumbnail',
       'ratio'           => 'fluid',
       'caption'         => ['alt' => 'alt', 'title' => 'title'],
+      'sizes'           => '100w',
     ] + BlazyDefault::extendedSettings()
-      + Blazy::init()
+      + BlazyDefault::itemSettings()
       + $this->getDefaultFieldDefinition();
 
-    Blazy::entitySettings($defaults, $this->entity);
+    BlazyEntity::settings($defaults, $this->entity);
 
     return empty($this->formatterSettings) ? $defaults : array_merge($defaults, $this->formatterSettings);
   }
@@ -125,7 +98,7 @@ trait BlazyUnitTestTrait {
    * @return array
    *   The default field formatter settings.
    */
-  protected function getCommonScopedFormElements() {
+  public function getCommonScopedFormElements() {
     return ['settings' => $this->getFormatterSettings()]
       + $this->getDefaultFieldDefinition();
   }
@@ -136,12 +109,11 @@ trait BlazyUnitTestTrait {
    * Since 2.10 sub-modules can forget this, and use self::getPluginScopes().
    */
   public function getScopedFormElements() {
-    $commons = $this->getCommonScopedFormElements();
     $scopes = $this->getPluginScopes();
 
     // @todo remove `$scopes +` at Blazy 3.x.
-    $definitions = $scopes + $commons;
-    $definitions['scopes'] = $this->toPluginScopes($scopes + $commons);
+    $definitions = $scopes + $this->getCommonScopedFormElements();
+    $definitions['scopes'] = $this->toPluginScopes($scopes);
     return $definitions;
   }
 
@@ -151,6 +123,7 @@ trait BlazyUnitTestTrait {
   protected function getPluginScopes(): array {
     return [
       'background'        => TRUE,
+      'box_captions'      => TRUE,
       'captions'          => ['alt' => 'Alt', 'title' => 'Title'],
       'classes'           => ['field_class' => 'Classes'],
       'multimedia'        => TRUE,
@@ -231,14 +204,14 @@ trait BlazyUnitTestTrait {
    * @return array
    *   The pre_render element.
    */
-  protected function doPreRenderImage(array $build) {
-    $settings = $this->blazyManager->toHashtag($build);
+  protected function doPreRenderImage(array $build = []) {
+    $settings = &$build['settings'];
     $this->blazyManager->postSettings($settings);
 
     $image = $this->blazyManager->getBlazy($build);
 
-    $image['#build']['#item'] = empty($image['#build']['#item'])
-      ? $build['#item'] : $image['#build']['#item'];
+    $image['#build']['item'] = empty($image['#build']['item'])
+      ? $build['item'] : $image['#build']['item'];
     return $this->blazyManager->preRenderBlazy($image);
   }
 
@@ -299,8 +272,8 @@ trait BlazyUnitTestTrait {
     $this->uri = $settings['uri'] = $item->uri;
 
     $this->data = [
-      '#settings' => $settings,
-      '#item' => $item,
+      'settings' => $settings,
+      'item' => $item,
     ];
 
     $this->testItem = $item;
@@ -311,20 +284,14 @@ trait BlazyUnitTestTrait {
    */
   protected function setUpMockImage() {
     $entity = $this->createMock('\Drupal\Core\Entity\ContentEntityInterface');
-
-    /* @phpstan-ignore-next-line */
     $entity->expects($this->any())
       ->method('label')
       ->willReturn($this->randomMachineName());
-
-    /* @phpstan-ignore-next-line */
     $entity->expects($this->any())
       ->method('getEntityTypeId')
       ->will($this->returnValue('node'));
 
     $item = $this->createMock('\Drupal\Core\Field\FieldItemListInterface');
-
-    /* @phpstan-ignore-next-line */
     $item->expects($this->any())
       ->method('getEntity')
       ->willReturn($entity);
@@ -332,21 +299,24 @@ trait BlazyUnitTestTrait {
     $this->setUpUnitImages();
 
     $this->testItem = $item;
-    $this->data['#item'] = $item;
+    $this->data['item'] = $item;
     $item->entity = $entity;
-  }
-
-  /**
-   * Returns the cross-compat D8 ~ D10 app root.
-   */
-  protected function root($container): string {
-    return \version_compare(\Drupal::VERSION, '9.0', '<')
-      ? $container->get('app.root') : $container->getParameter('app.root');
   }
 
 }
 
 namespace Drupal\blazy;
+
+if (!function_exists('blazy_alterable_settings')) {
+
+  /**
+   * Dummy function.
+   */
+  function blazy_alterable_settings() {
+    // Empty block to satisfy coder.
+  }
+
+}
 
 if (!function_exists('blazy')) {
 

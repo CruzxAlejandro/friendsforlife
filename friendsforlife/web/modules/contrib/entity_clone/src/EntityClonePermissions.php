@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class EntityClonePermissions implements ContainerInjectionInterface {
 
   /**
-   * The entity type manager.
+   * The entoty type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */

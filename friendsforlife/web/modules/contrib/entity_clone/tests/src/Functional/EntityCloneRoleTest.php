@@ -65,7 +65,7 @@ class EntityCloneRoleTest extends BrowserTestBase {
       'id' => 'test_role_for_clone',
     ];
     $this->drupalGet("/admin/people/roles/add");
-    $this->submitForm($edit, 'Save');
+    $this->submitForm($edit, $this->t('Save'));
 
     $roles = \Drupal::entityTypeManager()
       ->getStorage('user_role')
@@ -79,7 +79,7 @@ class EntityCloneRoleTest extends BrowserTestBase {
       'label' => 'Test role cloned',
     ];
     $this->drupalGet('entity_clone/user_role/' . $role->id());
-    $this->submitForm($edit, 'Clone');
+    $this->submitForm($edit, $this->t('Clone'));
 
     $roles = \Drupal::entityTypeManager()
       ->getStorage('user_role')

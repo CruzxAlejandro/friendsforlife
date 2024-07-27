@@ -5,13 +5,8 @@ namespace Drupal\Tests\entity_clone\Functional;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\node\Entity\Node;
-use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 use Drupal\Tests\node\Functional\NodeTestBase;
-
-// Workaround to support tests against Drupal 8, 9, 10 and 11.
-if (!trait_exists(EntityReferenceFieldCreationTrait::class)) {
-  class_alias('\Drupal\Tests\field\Traits\EntityReferenceTestTrait', EntityReferenceFieldCreationTrait::class);
-}
 
 /**
  * Create a content and test a clone.
@@ -20,7 +15,7 @@ if (!trait_exists(EntityReferenceFieldCreationTrait::class)) {
  */
 class EntityCloneContentTest extends NodeTestBase {
 
-  use EntityReferenceFieldCreationTrait;
+  use EntityReferenceTestTrait;
   use StringTranslationTrait;
 
   /**
@@ -73,7 +68,6 @@ class EntityCloneContentTest extends NodeTestBase {
     $this->drupalLogin($this->adminUser);
 
     ConfigurableLanguage::createFromLangcode('fr')->save();
-    ConfigurableLanguage::createFromLangcode('es')->save();
     \Drupal::service('content_translation.manager')->setEnabled('node', 'page', TRUE);
   }
 
@@ -89,7 +83,7 @@ class EntityCloneContentTest extends NodeTestBase {
     $node->save();
     $this->drupalGet('entity_clone/node/' . $node->id());
 
-    $this->submitForm([], 'Clone');
+    $this->submitForm([], $this->t('Clone'));
 
     $nodes = \Drupal::entityTypeManager()
       ->getStorage('node')
@@ -149,7 +143,7 @@ class EntityCloneContentTest extends NodeTestBase {
     $this->drupalGet('entity_clone/node/' . $original_node->id());
 
     // Clone the node.
-    $this->submitForm([], 'Clone');
+    $this->submitForm([], $this->t('Clone'));
 
     // Find the cloned node.
     $nodes = \Drupal::entityTypeManager()
@@ -177,135 +171,6 @@ class EntityCloneContentTest extends NodeTestBase {
     // and the translation as both should be reset.
     $this->assertEquals($cloned_node->getCreatedTime(), $translation->getCreatedTime());
     $this->assertEquals($cloned_node->getChangedTime(), $translation->getChangedTime());
-  }
-
-  /**
-   * Test entity translations cloning.
-   *
-   * Test the cloning of nodes with translations in four different ways and
-   * assert that translations are either kept or removed according to the form
-   * values. Also, assert that the default language is changed when cloning
-   * the current translation into a new node discarding all others.
-   *
-   * 1. Clone node keeping all translations
-   * 2. Clone node keeping only one translation (default plus one)
-   * 3. Clone current translation only (discarding previous default)
-   * 4. Clone current translation keeping all others (not changing default)
-   */
-  public function testContentEntityTranslationsClone() {
-    // 1. Clone node keeping all translations.
-    $node_title = $this->randomMachineName(8);
-    $node = Node::create([
-      'type' => 'page',
-      'title' => $node_title,
-    ]);
-    $node->save();
-
-    $node->addTranslation('fr', $node->toArray());
-    $node->addTranslation('es', $node->toArray());
-    $node->save();
-
-    $this->drupalGet('entity_clone/node/' . $node->id());
-    $this->submitForm(['edit-all-translations' => TRUE], 'Clone');
-
-    $nodes = \Drupal::entityTypeManager()
-      ->getStorage('node')
-      ->loadByProperties([
-        'title' => $node_title . ' - Cloned',
-      ]);
-    $node = reset($nodes);
-    $this->assertInstanceOf(Node::class, $node, 'Test node cloned found in database.');
-    // Only two translations should be present.
-    $this->assertCount(3, $node->getTranslationLanguages());
-    $translation = $node->getTranslation('fr');
-    // The French translation should not be the default one.
-    $this->assertFalse($translation->isDefaultTranslation());
-
-    $translation = $node->getTranslation('en');
-    // The French translation should not be the default one.
-    $this->assertTrue($translation->isDefaultTranslation());
-
-    // 2. Clone node keeping only one translation (default plus one)
-    $node_title = $this->randomMachineName(8);
-    $node = Node::create([
-      'type' => 'page',
-      'title' => $node_title,
-    ]);
-    $node->save();
-
-    $node->addTranslation('fr', $node->toArray());
-    $node->addTranslation('es', $node->toArray());
-    $node->save();
-
-    $this->drupalGet('entity_clone/node/' . $node->id());
-    $this->submitForm([
-      'edit-all-translations' => FALSE,
-      'edit-es' => FALSE,
-      'edit-fr' => TRUE,
-    ], 'Clone');
-
-    $nodes = \Drupal::entityTypeManager()
-      ->getStorage('node')
-      ->loadByProperties([
-        'title' => $node_title . ' - Cloned',
-      ]);
-    $node = reset($nodes);
-    $this->assertInstanceOf(Node::class, $node, 'Test node cloned found in database.');
-    // Only two translations should be present.
-    $this->assertCount(2, $node->getTranslationLanguages());
-    $translation = $node->getTranslation('fr');
-    // The French translation should not be the default one.
-    $this->assertFalse($translation->isDefaultTranslation());
-
-    // 3. Clone current translation only (discarding previous default)
-    $node_title = $this->randomMachineName(8);
-    $node = Node::create([
-      'type' => 'page',
-      'title' => $node_title,
-    ]);
-    $node->save();
-    $node->addTranslation('fr', $node->toArray());
-    $node->save();
-    $this->drupalGet('fr/entity_clone/node/' . $node->id());
-    $this->submitForm(['edit-current-translation' => TRUE], 'Clone');
-
-    $nodes = \Drupal::entityTypeManager()
-      ->getStorage('node')
-      ->loadByProperties([
-        'title' => $node_title . ' - Cloned',
-      ]);
-    $node = reset($nodes);
-    $this->assertInstanceOf(Node::class, $node, 'Test node cloned found in database.');
-    // Only one translation should be present.
-    $this->assertCount(1, $node->getTranslationLanguages());
-    // The translation should be the default one.
-    $this->assertTrue($node->getTranslation('fr')->isDefaultTranslation());
-
-    // 4. Clone current translation only (discarding previous default)
-    $node_title = $this->randomMachineName(8);
-    $node = Node::create([
-      'type' => 'page',
-      'title' => $node_title,
-    ]);
-    $node->save();
-    $node->addTranslation('fr', $node->toArray());
-    $node->addTranslation('es', $node->toArray());
-    $node->save();
-    $this->drupalGet('fr/entity_clone/node/' . $node->id());
-    $this->submitForm(['edit-current-translation' => FALSE], 'Clone');
-
-    $nodes = \Drupal::entityTypeManager()
-      ->getStorage('node')
-      ->loadByProperties([
-        'title' => $node_title . ' - Cloned',
-      ]);
-    $node = reset($nodes);
-    $this->assertInstanceOf(Node::class, $node, 'Test node cloned found in database.');
-    // All translations should still be present.
-    $this->assertCount(3, $node->getTranslationLanguages());
-    // The default translation should remain unchanged.
-    $this->assertFalse($node->getTranslation('fr')->isDefaultTranslation());
-    $this->assertTrue($node->getTranslation('en')->isDefaultTranslation());
   }
 
 }

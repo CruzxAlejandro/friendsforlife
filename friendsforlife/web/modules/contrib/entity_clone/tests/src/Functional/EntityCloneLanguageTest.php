@@ -64,7 +64,7 @@ class EntityCloneLanguageTest extends BrowserTestBase {
       'predefined_langcode' => 'fr',
     ];
     $this->drupalGet("/admin/config/regional/language/add");
-    $this->submitForm($edit, 'Add language');
+    $this->submitForm($edit, $this->t('Add language'));
 
     $languages = \Drupal::entityTypeManager()
       ->getStorage('configurable_language')
@@ -78,7 +78,7 @@ class EntityCloneLanguageTest extends BrowserTestBase {
       'label' => 'French language cloned',
     ];
     $this->drupalGet('entity_clone/configurable_language/' . $language->id());
-    $this->submitForm($edit, 'Clone');
+    $this->submitForm($edit, $this->t('Clone'));
 
     $languages = \Drupal::entityTypeManager()
       ->getStorage('configurable_language')

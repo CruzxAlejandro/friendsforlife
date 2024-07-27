@@ -74,7 +74,7 @@ class EntityCloneEntityViewModeTest extends BrowserTestBase {
       'id' => 'register_clone',
     ];
     $this->drupalGet('entity_clone/entity_view_mode/' . $entity_view_mode->id());
-    $this->submitForm($edit, 'Clone');
+    $this->submitForm($edit, $this->t('Clone'));
 
     $entity_view_modes = \Drupal::entityTypeManager()
       ->getStorage('entity_view_mode')

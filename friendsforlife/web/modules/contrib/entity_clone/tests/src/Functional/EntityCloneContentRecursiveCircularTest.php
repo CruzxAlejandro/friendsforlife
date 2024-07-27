@@ -4,13 +4,8 @@ namespace Drupal\Tests\entity_clone\Functional;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\node\Entity\Node;
-use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
 use Drupal\Tests\node\Functional\NodeTestBase;
-
-// Workaround to support tests against Drupal 8, 9, 10 and 11.
-if (!trait_exists(EntityReferenceFieldCreationTrait::class)) {
-  class_alias('\Drupal\Tests\field\Traits\EntityReferenceTestTrait', EntityReferenceFieldCreationTrait::class);
-}
 
 /**
  * Create a content and test a clone.
@@ -19,7 +14,7 @@ if (!trait_exists(EntityReferenceFieldCreationTrait::class)) {
  */
 class EntityCloneContentRecursiveCircularTest extends NodeTestBase {
 
-  use EntityReferenceFieldCreationTrait;
+  use EntityReferenceTestTrait;
   use StringTranslationTrait;
 
   /**
@@ -113,7 +108,7 @@ class EntityCloneContentRecursiveCircularTest extends NodeTestBase {
     \Drupal::service('config.factory')->getEditable('entity_clone.settings')->set('form_settings', $settings)->save();
     $this->drupalGet('entity_clone/node/' . $node1->id());
 
-    $this->submitForm([], 'Clone');
+    $this->submitForm([], $this->t('Clone'));
 
     $nodes = \Drupal::entityTypeManager()
       ->getStorage('node')
@@ -186,7 +181,7 @@ class EntityCloneContentRecursiveCircularTest extends NodeTestBase {
     \Drupal::service('config.factory')->getEditable('entity_clone.settings')->set('form_settings', $settings)->save();
     $this->drupalGet('entity_clone/node/' . $parent_node->id());
 
-    $this->submitForm([], 'Clone');
+    $this->submitForm([], $this->t('Clone'));
 
     $nodes = \Drupal::entityTypeManager()
       ->getStorage('node')

@@ -4,7 +4,6 @@ namespace Drupal\Tests\paragraphs\Functional\Migrate;
 
 use Behat\Mink\Exception\ExpectationException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
-use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Site\Settings;
@@ -415,14 +414,8 @@ abstract class MigrateUiParagraphsTestBase extends MigrateUpgradeTestBase {
 
     // Use the driver connection form to get the correct options out of the
     // database settings. This supports all of the databases we test against.
-    if (method_exists(Database::class, 'getDriverList')) {
-      $drivers = Database::getDriverList()->getInstallableList();
-      $form = $drivers[$driver]->getInstallTasks()->getFormOptions($connection_options);
-    }
-    else {
-      $drivers = drupal_get_database_types();
-      $form = $drivers[$driver]->getFormOptions($connection_options);
-    }
+    $drivers = drupal_get_database_types();
+    $form = $drivers[$driver]->getFormOptions($connection_options);
     $connection_options = array_intersect_key($connection_options, $form + $form['advanced_options']);
     $version = $this->getLegacyDrupalVersion($this->sourceDatabase);
     $edit = [

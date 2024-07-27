@@ -1,3 +1,4 @@
+uuid: a8d83177-74a1-488f-bcf8-4667773bebc7
 langcode: en
 status: true
 dependencies:
@@ -5,6 +6,7 @@ dependencies:
     - field.field.media.vector_image.field_media_svg
     - media.type.vector_image
   module:
+    - path
     - svg_image_field
 id: media.vector_image.default
 targetEntityType: media
@@ -26,11 +28,17 @@ content:
     third_party_settings: {  }
     type: svg_image_field_widget
     region: content
+  path:
+    type: path
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   status:
     type: boolean_checkbox
     settings:
       display_label: true
-    weight: 3
+    weight: 4
     region: content
     third_party_settings: {  }
   uid:

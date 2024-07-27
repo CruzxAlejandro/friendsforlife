@@ -55,7 +55,7 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'starterkit_theme';
+  protected $defaultTheme = 'classy';
 
   /**
    * {@inheritdoc}
@@ -165,6 +165,7 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $modal = $assert_session->waitForElement('css', '.ui-dialog');
     $this->assertNotNull($modal);
     $session->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
+    $assert_session->assertWaitOnAjaxRequest();
     $assert_session->pageTextContains('Library item 1');
     // Select the first item from the library and accept.
     $first_row_checkbox = $assert_session->elementExists('css', '.view-content tbody tr:nth-child(1) input');
@@ -172,6 +173,7 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $page->pressButton('Select reusable paragraph');
     $session->wait(1000);
     $session->switchToIFrame();
+    $assert_session->assertWaitOnAjaxRequest();
     // Make sure the content moderation control extra field is not rendered in
     // the summary viewmode of the library item.
     $assert_session->elementExists('css', '#edit-field-paragraphs-wrapper .rendered-entity');
@@ -539,6 +541,7 @@ class ParagraphsContentModerationTest extends WebDriverTestBase {
     $modal = $assert_session->waitForElement('css', '.ui-dialog');
     $this->assertNotNull($modal);
     $session->switchToIFrame('entity_browser_iframe_paragraphs_library_items');
+    $assert_session->assertWaitOnAjaxRequest();
     $assert_session->pageTextContains('Child library item');
     $assert_session->pageTextContains('Rich library item');
     $table = $assert_session->elementExists('css', 'table.views-table');

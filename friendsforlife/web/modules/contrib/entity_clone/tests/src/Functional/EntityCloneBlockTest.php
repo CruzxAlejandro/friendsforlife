@@ -76,7 +76,7 @@ class EntityCloneBlockTest extends BrowserTestBase {
       'id' => 'test_block_cloned',
     ];
     $this->drupalGet('entity_clone/block/' . $block->id());
-    $this->submitForm($edit, 'Clone');
+    $this->submitForm($edit, $this->t('Clone'));
 
     $blocks = \Drupal::entityTypeManager()
       ->getStorage('block')

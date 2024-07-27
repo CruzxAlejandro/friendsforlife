@@ -65,7 +65,7 @@ class EntityCloneShortcutSetTest extends BrowserTestBase {
       'label' => 'Test shortcut set cloned',
     ];
     $this->drupalGet('entity_clone/shortcut_set/default');
-    $this->submitForm($edit, 'Clone');
+    $this->submitForm($edit, $this->t('Clone'));
 
     $shortcut_sets = \Drupal::entityTypeManager()
       ->getStorage('shortcut_set')

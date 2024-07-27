@@ -84,27 +84,12 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
 
     // Add a text field to the text_paragraph type.
     $this->drupalGet('admin/structure/paragraphs_type/' . $paragraph_type . '/fields/add-field');
-    if ($this->coreVersion('10.2')) {
-      $page->selectFieldOption('new_storage_type', 'formatted_text');
-      $this->assertSession()->waitForElementVisible('css', '#text_long');
-      $page->selectFieldOption('group_field_options_wrapper', 'text_long');
-    }
-    else {
-      $page->selectFieldOption('new_storage_type', 'text_long');
-    }
+    $page->selectFieldOption('new_storage_type', 'text_long');
     $page->fillField('label', 'Text');
     $this->assertSession()->waitForElementVisible('css', '#edit-name-machine-name-suffix .link');
     $page->pressButton('Edit');
     $page->fillField('field_name', 'text');
-    if ($this->coreVersion('10.2')) {
-      $page->pressButton('Continue');
-      $page->pressButton('Save settings');
-    }
-    else {
-      $page->pressButton('Save and continue');
-      $page->pressButton('Save field settings');
-      $page->pressButton('Save settings');
-    }
+    $page->pressButton('Save and continue');
 
     // Create paragraph type Nested test.
     $this->addParagraphsType('nested_test');
@@ -115,15 +100,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $this->assertSession()->waitForElementVisible('css', '#edit-name-machine-name-suffix .link');
     $page->pressButton('Edit');
     $page->fillField('field_name', 'paragraphs');
-    if ($this->coreVersion('10.2')) {
-      $page->pressButton('Continue');
-      $page->pressButton('Save settings');
-    }
-    else {
-      $page->pressButton('Save and continue');
-      $page->pressButton('Save field settings');
-      $page->pressButton('Save settings');
-    }
+    $page->pressButton('Save and continue');
 
     // Set the settings for the field in the nested paragraph.
     $component = [
@@ -142,6 +119,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
 
     // Add a nested paragraph with the add widget.
     $page->pressButton('Add Paragraph');
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertSession()->elementTextContains('css', '.ui-dialog-title', 'Add Paragraph');
     $paragraphs_dialog = $this->assertSession()->waitForElementVisible('css', 'div.ui-dialog');
     $paragraphs_dialog->pressButton('nested_test');
@@ -187,10 +165,12 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     // correctly.
     $this->drupalGet('node/add/paragraphed_test');
     $page->pressButton('Add Paragraph');
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertSession()->elementTextContains('css', '.ui-dialog-title', 'Add Paragraph');
     $this->assertSession()->elementTextNotContains('css', '.ui-dialog-title', 'Add Renamed paragraph');
     $this->assertSession()->elementExists('css', '.ui-dialog-titlebar-close')->press();
     $page->pressButton('Add Renamed paragraph');
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $this->assertSession()->elementTextContains('css', '.ui-dialog-title', 'Add Renamed paragraph');
     $this->assertSession()->elementTextNotContains('css', '.ui-dialog-title', 'Add Paragraph');
   }
@@ -228,73 +208,28 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
 
     // Add a text field to the text_paragraph type.
     $this->drupalGet('admin/structure/paragraphs_type/test_1/fields/add-field');
-    if ($this->coreVersion('10.2')) {
-      $page->selectFieldOption('new_storage_type', 'formatted_text');
-      $this->assertSession()->waitForElementVisible('css', '#text_long');
-      $page->selectFieldOption('group_field_options_wrapper', 'text_long');
-    }
-    else {
-      $page->selectFieldOption('new_storage_type', 'text_long');
-    }
+    $page->selectFieldOption('new_storage_type', 'text_long');
     $page->fillField('label', 'Text');
     $this->assertSession()->waitForElementVisible('css', '#edit-name-machine-name-suffix .link');
     $page->pressButton('Edit');
     $page->fillField('field_name', 'text_1');
-    if ($this->coreVersion('10.2')) {
-      $page->pressButton('Continue');
-      $page->pressButton('Save settings');
-    }
-    else {
-      $page->pressButton('Save and continue');
-      $page->pressButton('Save field settings');
-      $page->pressButton('Save settings');
-    }
+    $page->pressButton('Save and continue');
 
     $this->drupalGet('admin/structure/paragraphs_type/test_2/fields/add-field');
-    if ($this->coreVersion('10.2')) {
-      $page->selectFieldOption('new_storage_type', 'formatted_text');
-      $this->assertSession()->waitForElementVisible('css', '#text_long');
-      $page->selectFieldOption('group_field_options_wrapper', 'text_long');
-    }
-    else {
-      $page->selectFieldOption('new_storage_type', 'text_long');
-    }
+    $page->selectFieldOption('new_storage_type', 'text_long');
     $page->fillField('label', 'Text');
     $this->assertSession()->waitForElementVisible('css', '#edit-name-machine-name-suffix .link');
     $page->pressButton('Edit');
     $page->fillField('field_name', 'text_2');
-    if ($this->coreVersion('10.2')) {
-      $page->pressButton('Continue');
-      $page->pressButton('Save settings');
-    }
-    else {
-      $page->pressButton('Save and continue');
-      $page->pressButton('Save field settings');
-      $page->pressButton('Save settings');
-    }
+    $page->pressButton('Save and continue');
 
     $this->drupalGet('admin/structure/paragraphs_type/test_3/fields/add-field');
-    if ($this->coreVersion('10.2')) {
-      $page->selectFieldOption('new_storage_type', 'formatted_text');
-      $this->assertSession()->waitForElementVisible('css', '#text_long');
-      $page->selectFieldOption('group_field_options_wrapper', 'text_long');
-    }
-    else {
-      $page->selectFieldOption('new_storage_type', 'text_long');
-    }
+    $page->selectFieldOption('new_storage_type', 'text_long');
     $page->fillField('label', 'Text');
     $this->assertSession()->waitForElementVisible('css', '#edit-name-machine-name-suffix .link');
     $page->pressButton('Edit');
     $page->fillField('field_name', 'test_3');
-    if ($this->coreVersion('10.2')) {
-      $page->pressButton('Continue');
-      $page->pressButton('Save settings');
-    }
-    else {
-      $page->pressButton('Save and continue');
-      $page->pressButton('Save field settings');
-      $page->pressButton('Save settings');
-    }
+    $page->pressButton('Save and continue');
 
     // Create paragraph type Nested test.
     $this->addParagraphsType('test_nested');
@@ -305,15 +240,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     $this->assertSession()->waitForElementVisible('css', '#edit-name-machine-name-suffix .link');
     $page->pressButton('Edit');
     $page->fillField('field_name', 'paragraphs');
-    if ($this->coreVersion('10.2')) {
-      $page->pressButton('Continue');
-      $page->pressButton('Save settings');
-    }
-    else {
-      $page->pressButton('Save and continue');
-      $page->pressButton('Save field settings');
-      $page->pressButton('Save settings');
-    }
+    $page->pressButton('Save and continue');
 
     // Set the settings for the field in the nested paragraph.
     $component = [
@@ -337,6 +264,7 @@ class ParagraphsAddWidgetTest extends WebDriverTestBase {
     // ParagraphsWidget::prepareDeltaPosition() when list is empty.
     $this->getSession()->executeScript("jQuery('input.paragraph-type-add-delta').last().val(-100)");
     $page->find('xpath', '//*[@name="button_add_modal"]')->click();
+    $this->assertSession()->assertWaitOnAjaxRequest();
     $page->find('xpath', '//*[contains(@class, "paragraphs-add-dialog") and contains(@class, "ui-dialog-content")]//*[contains(@name, "test_nested")]')->click();
     $this->assertSession()->assertWaitOnAjaxRequest();
 

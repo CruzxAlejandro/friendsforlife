@@ -100,7 +100,8 @@ final class MigrationPluginsAlterer {
       'source_value' => 'entity_type',
       'expected_value' => 'field_collection_item',
       'process' => [
-        'plugin' => 'paragraphs_strip_field_prefix',
+        'plugin' => 'substr',
+        'start' => FieldCollection::FIELD_COLLECTION_PREFIX_LENGTH,
       ],
     ];
   }

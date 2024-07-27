@@ -39,13 +39,13 @@
           cancelText: spectrum_settings.cancel_text,
           appendTo: $element_color.parent(),
 
-          change: function (truecolor) {
+          change: function (tinycolor) {
             let hexColor = '';
             let opacity = '';
 
-            if (truecolor) {
-              hexColor = truecolor.toHexString();
-              opacity = Math.round((truecolor._roundA + Number.EPSILON) * 100) / 100;
+            if (tinycolor) {
+              hexColor = tinycolor.toHexString();
+              opacity = Math.round((tinycolor._roundA + Number.EPSILON) * 100) / 100;
             }
 
             $element_color.val(hexColor);
@@ -56,11 +56,11 @@
 
         // Set alpha value on load.
         if (!!spectrum_settings.show_alpha) {
-          const truecolor = $element_color.spectrum("get");
+          const tinycolor = $element_color.spectrum("get");
           const alpha = $element_opacity.val();
           if (alpha > 0) {
-            truecolor.setAlpha(alpha);
-            $element_color.spectrum("set", truecolor);
+            tinycolor.setAlpha(alpha);
+            $element_color.spectrum("set", tinycolor);
           }
         }
 

@@ -4,7 +4,6 @@ namespace Drupal\Tests\slick\Kernel;
 
 use Drupal\Core\Form\FormState;
 use Drupal\Tests\blazy\Kernel\BlazyKernelTestBase;
-use Drupal\Tests\slick\Traits\SlickKernelTrait;
 use Drupal\Tests\slick\Traits\SlickUnitTestTrait;
 
 /**
@@ -16,7 +15,6 @@ use Drupal\Tests\slick\Traits\SlickUnitTestTrait;
 class SlickTextFormatterTest extends BlazyKernelTestBase {
 
   use SlickUnitTestTrait;
-  use SlickKernelTrait;
 
   /**
    * {@inheritdoc}
@@ -85,14 +83,14 @@ class SlickTextFormatterTest extends BlazyKernelTestBase {
     $component = $this->display->getComponent($this->testFieldName);
     $this->assertEquals($this->testPluginId, $component['type']);
 
-    $render = $this->slickManager->renderer()->renderRoot($build);
+    $render = $this->slickManager->getRenderer()->renderRoot($build);
     $this->assertNotEmpty($render);
 
-    $render_empty = $this->slickManager->renderer()->renderRoot($build_empty[$this->testEmptyName]);
+    $render_empty = $this->slickManager->getRenderer()->renderRoot($build_empty[$this->testEmptyName]);
     $this->assertEmpty($render_empty);
 
-    $scopes = $this->formatterInstance->buildSettings();
-    $this->assertEquals($this->testPluginId, $scopes['blazies']->get('field.plugin_id'));
+    $scopes = $this->formatterInstance->getScopedFormElements();
+    $this->assertEquals($this->testPluginId, $scopes['plugin_id']);
 
     $form = [];
     $form_state = new FormState();
