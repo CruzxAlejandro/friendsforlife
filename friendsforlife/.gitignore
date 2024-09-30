@@ -63,3 +63,4 @@
 /db
 /.lando.yml
 /web/themes/custom/dhfentynal/.prettierignore
+/web/js
