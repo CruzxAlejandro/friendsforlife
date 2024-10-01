@@ -21,6 +21,7 @@
         "drupal/blazy": "^2.14",
         "drupal/block_class": "^2.0",
         "drupal/bootstrap5": "^3.0",
+        "drupal/bootstrap_layout_builder": "^2.2",
         "drupal/color_field": "^3.0",
         "drupal/core-composer-scaffold": "^10.3",
         "drupal/core-recommended": "^10.3",
@@ -37,12 +38,12 @@
         "drupal/slick_views": "^2.6",
         "drupal/sva": "^1.0@beta",
         "drupal/svg_image_field": "^2.2@beta",
-        "drush/drush": "^12.5"
+        "drush/drush": "^13.2"
     },
     "conflict": {
         "drupal/drupal": "*"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
         "allow-plugins": {

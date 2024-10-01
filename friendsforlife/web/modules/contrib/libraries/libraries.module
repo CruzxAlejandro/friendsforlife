@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\DrupalKernel;
-use Drupal\Core\Extension\ModuleHandler;
 use Drupal\libraries\ExternalLibrary\Asset\AttachableAssetLibraryRegistrationInterface;
 use Drupal\libraries\ExternalLibrary\Utility\LibraryAccessorInterface;
 use Drupal\libraries\ExternalLibrary\Utility\LibraryIdAccessorInterface;
@@ -36,7 +35,7 @@ function libraries_library_info_build() {
       // the build process, but should be logged.
       if ($e instanceof LibraryIdAccessorInterface || $e instanceof LibraryAccessorInterface) {
         $libraries_with_errors[] = $external_library_id;
-        watchdog_exception('libraries', $e);
+        \Drupal::logger('libraries')->error($e->getMessage());
       }
       else {
         // Re-throw exceptions that are not library-specific.
@@ -404,12 +403,14 @@ function &libraries_info($name = NULL) {
     $libraries = [];
     // Gather information from hook_libraries_info().
     $module_handler = \Drupal::moduleHandler();
-    foreach ($module_handler->getImplementations('libraries_info') as $module) {
-      foreach ($module_handler->invoke($module, 'libraries_info') as $machine_name => $properties) {
+    $hook = 'libraries_info';
+    $module_handler->invokeAllWith($hook, function (callable $hook, string $module) use ($module_handler, &$libraries) {
+
+      foreach ((array) $module_handler->invoke($module, 'libraries_info') as $machine_name => $properties) {
         $properties['module'] = $module;
         $libraries[$machine_name] = $properties;
       }
-    }
+    });
     // Gather information from hook_libraries_info() in enabled themes.
     // @see drupal_alter()
     global $theme, $base_theme_info;
