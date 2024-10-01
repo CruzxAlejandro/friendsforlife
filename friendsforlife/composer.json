@@ -36,7 +36,8 @@
         "drupal/slick": "^2.7",
         "drupal/slick_views": "^2.6",
         "drupal/sva": "^1.0@beta",
-        "drupal/svg_image_field": "^2.2@beta"
+        "drupal/svg_image_field": "^2.2@beta",
+        "drush/drush": "^12.5"
     },
     "conflict": {
         "drupal/drupal": "*"
